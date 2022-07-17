@@ -12,7 +12,9 @@
 
   // Set up session variables and select the page
   runQuery($db, 'SET @_PATH = ?; SET @_POST = ?; SET @_GET = ?;', strtok($_SERVER['REQUEST_URI'], '?'), json_encode($_POST), json_encode($_GET));
-  if(!($page = runQuery($db, 'SELECT * FROM sqh_pages WHERE path = @_PATH')->fetch())) { http_response_code(404); exit(); }
+  if(!($page = runQuery($db, 'SELECT * FROM sqh_pages WHERE path = @_PATH')->fetch())) {
+    $page = runQuery($db, 'SELECT * FROM sqh_pages WHERE path = "/404"')->fetch() ?: ['content'=>'Page not found','meta_type'=>'text/plain'];
+    http_response_code(404); }
 
   // Replace includes and embedded SQL blocks until we run out of things to replace
   do {} while($page['content'] != ($page['content'] = preg_replace_callback_array([

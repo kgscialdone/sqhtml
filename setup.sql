@@ -17,7 +17,7 @@ CREATE OR REPLACE FUNCTION sqh_link(href TEXT, content LONGTEXT) RETURNS LONGTEX
 CREATE OR REPLACE FUNCTION sqh_tag (name TEXT, content LONGTEXT) RETURNS LONGTEXT DETERMINISTIC
   RETURN CONCAT('<', name, '>', content, '</', name, '>')$$
 
-CREATE OR REPLACE FUNCTION `sqh_thead` (`from_table` VARCHAR(128)) RETURNS LONGTEXT DETERMINISTIC
+CREATE OR REPLACE FUNCTION sqh_thead (from_table VARCHAR(128)) RETURNS LONGTEXT DETERMINISTIC
 BEGIN
   DECLARE temp LONGTEXT;
   SELECT CONCAT(
@@ -54,6 +54,41 @@ ALTER TABLE sqh_includes
 ALTER TABLE sqh_pages
   DROP PRIMARY KEY,
   ADD PRIMARY KEY (path);
+
+
+-- Default pages
+
+INSERT IGNORE INTO sqh_includes (name, content) VALUES
+  ('head', CONCAT_WS('\n'
+    ,'<!DOCTYPE html>'
+    ,'<html>'
+    ,'<head>'
+    ,'  <title>{{SELECT meta_title FROM sqh_pages WHERE path = @_PATH}}</title>'
+    ,'  <link rel="stylesheet" href="/style.css">'
+    ,'</head>'
+    ,'<body>')),
+  ('foot', CONCAT_WS('\n'
+    ,'</body>'
+    ,'</html>'));
+
+INSERT IGNORE INTO sqh_pages (path, meta_type, meta_title, content) VALUES
+  ('/', 'text/html', 'Home', CONCAT_WS('\n'
+    ,'[[head]]'
+    ,'<h1>Set up your new site</h1><hr>'
+    ,'<p>SQHTML has been successfully installed. Head into your database manager to set up your website.</p>'
+    ,'[[foot]]')),
+  ('/404', 'text/html', 'Page Not Found', CONCAT_WS('\n'
+    ,'[[head]]'
+    ,'<h1>Page Not Found</h1><hr>'
+    ,'<p>Looks like that page doesn\'t exist. Try heading back to <a href="/">the home page</a>.</p>'
+    ,'[[foot]]')),
+  ('/style.css', 'text/css', NULL, CONCAT_WS('\n'
+    ,'* { margin: 0; padding: 0; box-sizing: border-box; }'
+    ,':root { font: 16px sans-serif; }'
+    ,'body { width: 50ch; margin: 100px auto; text-align: center; }'
+    ,'hr { width: 50px; opacity: 0.25; margin: 15px auto 0; }'
+    ,'p { margin-top: 15px; }'
+    ));
 
 COMMIT;
 
