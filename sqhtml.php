@@ -1,5 +1,5 @@
 <?php
-  // SQHTML v0.1.0 by Katrina Scialdone
+  // SQHTML v0.1.1 by Katrina Scialdone
   // https://sqhtml.swordglowsblue.com
 
   // Load database connection settings from environment variables
