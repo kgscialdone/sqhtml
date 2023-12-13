@@ -7,5 +7,5 @@ SQHTML is a server-side dynamic site generation framework written in ~30 lines o
 
 Disclaimer: This project started as a joke, and probably should have remained one. If you're really serious about using it, please for the love of all things holy don't use it for anything system critical.
 
-Learn more on the [SQHTML website](https://sqhtml.swordglowsblue.com) (which is, of course, itself written in SQHTML).
+Learn more on the [SQHTML website](https://sqhtml.unmodernweb.com) (which is, of course, itself written in SQHTML).
 
